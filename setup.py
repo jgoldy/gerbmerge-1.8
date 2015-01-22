@@ -36,6 +36,19 @@ if sys.platform == 'win32' or ('bdist_wininst' in sys.argv):
   DestDir = os.path.join(DestLib, 'gerbmerge')
   BinFiles = ['misc/gerbmerge.bat']
   BinDir = '.'
+elif sys.platform == 'darwin': # this catches MAC OSX
+  DestLib = distutils.sysconfig.get_python_lib()
+  DestDir = os.path.join(DestLib, 'gerbmerge')
+  BinFiles = ['misc/gerbmerge']
+  BinDir = distutils.sysconfig.get_config_var('BINDIR')  
+
+  # Create top-level invocation program
+  fid = file('misc/gerbmerge', 'wt')
+  fid.write( \
+  r"""#!/bin/sh
+python %s/gerbmerge.py $*
+ """ % DestDir)
+  fid.close()
 else:
   DestLib = distutils.sysconfig.get_config_var('LIBPYTHON')
   DestDir = os.path.join(DestLib, 'gerbmerge')
@@ -102,7 +115,10 @@ if do_fix_perms:
           os.chmod(fullname, 0644)
 
     os.path.walk(DestDir, fixperms, 1)
-    os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
+    if sys.platform == 'darwin': # this catches MAC OSX
+      pass
+    else:
+      os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
 
     os.chmod(os.path.join(BinDir, 'gerbmerge'), 0755)
     print 'done'
