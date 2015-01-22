@@ -141,6 +141,11 @@ def writeExcellonFooter(fid):
 
 def writeExcellonTool(fid, tool, size):
   fid.write('%sC%f\n' % (tool, size))
+  
+# JGoldberg added this method
+# writeExcellonText simply adds a line of text to the Excellon file
+def writeExcellonText(fid, tool):
+  fid.write('%s\n' % tool)
 
 def writeFiducials(fid, drawcode, OriginX, OriginY, MaxXExtent, MaxYExtent):
   """Place fiducials at arbitrary points. The FiducialPoints list in the config specifies
@@ -630,6 +635,9 @@ def merge(opts, args, gui = None):
 
   writeExcellonHeader(fid)
 
+  # JGoldberg added and modified code below
+  writeExcellonText(fid, "M48")
+  writeExcellonText(fid, "M72")
   # Ensure each one of our tools is represented in the tool list specified
   # by the user.
   for tool in Tools:
@@ -639,6 +647,18 @@ def merge(opts, args, gui = None):
       raise RuntimeError, "INTERNAL ERROR: Tool code %s not found in global tool map" % tool
       
     writeExcellonTool(fid, tool, size)
+
+  writeExcellonHeader(fid)
+  # Ensure each one of our tools is represented in the tool list specified
+  # by the user.
+  for tool in Tools:
+    try:
+      size = config.GlobalToolMap[tool]
+    except:
+      raise RuntimeError, "INTERNAL ERROR: Tool code %s not found in global tool map" % tool
+      
+    writeExcellonText(fid, tool)
+    # JGoldberg added and modified code above
 
     #for row in Layout:
     #  row.writeExcellon(fid, size)
