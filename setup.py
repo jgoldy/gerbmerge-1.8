@@ -93,6 +93,10 @@ URL below.
                       (BinDir, BinFiles) ]
 )
 
+# TODO: This will not support multiple commands properly,
+#  unknown why cmd is referenced without being set ever.
+cmd = dist.commands[0]
+
 do_fix_perms = 0
 if sys.platform != "win32":
   for cmd in dist.commands:
@@ -139,3 +143,7 @@ if cmd[:7]=='install':
   print 'A shortcut to starting the program has been installed as:'
   print '   ', os.path.join(BinDir, 'gerbmerge')
   print
+  #TODO: fix path reporting for windows; test path reporting in *nix
+  print '    ---> NOTE <--- '
+  print 'For Windows installation, the above paths are reported incorrectly.'
+  print 'Look back at the build/installation log for actual copies.'
