@@ -1,0 +1,33 @@
+# Compiled python files
+*.py[cod]
+
+# Packages and python build output
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+installed_files
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Some Eagle example date is included with the package
+# Any edits to those files will produce Eagle temp files
+*.b#*
+*.s#*
+*.l#*

@@ -49,8 +49,8 @@ elif sys.platform == 'darwin': # this catches MAC OSX
 python %s/gerbmerge.py $*
  """ % DestDir)
   fid.close()
-else:
-  DestLib = distutils.sysconfig.get_config_var('LIBPYTHON')
+else:  # Should be linux or *nix here
+  DestLib = distutils.sysconfig.get_python_lib()
   DestDir = os.path.join(DestLib, 'gerbmerge')
   BinFiles = ['misc/gerbmerge']
   BinDir = distutils.sysconfig.get_config_var('BINDIR')  
@@ -59,8 +59,8 @@ else:
   fid = file('misc/gerbmerge', 'wt')
   fid.write( \
   r"""#!/bin/sh
-python %s/site-packages/gerbmerge/gerbmerge.py $*
-  """ % DestLib)
+  python %s/gerbmerge.py $*
+  """ % DestDir)
   fid.close()
 
 dist=setup (name = "gerbmerge",
@@ -93,6 +93,10 @@ URL below.
                       (BinDir, BinFiles) ]
 )
 
+# TODO: This will not support multiple commands properly,
+#  unknown why cmd is referenced without being set ever.
+cmd = dist.commands[0]
+
 do_fix_perms = 0
 if sys.platform != "win32":
   for cmd in dist.commands:
@@ -118,7 +122,8 @@ if do_fix_perms:
     if sys.platform == 'darwin': # this catches MAC OSX
       pass
     else:
-      os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
+      #os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
+      pass
 
     os.chmod(os.path.join(BinDir, 'gerbmerge'), 0755)
     print 'done'
@@ -139,3 +144,7 @@ if cmd[:7]=='install':
   print 'A shortcut to starting the program has been installed as:'
   print '   ', os.path.join(BinDir, 'gerbmerge')
   print
+  #TODO: fix path reporting for windows; test path reporting in *nix
+  print '    ---> NOTE <--- '
+  print 'For Windows installation, the above paths are reported incorrectly.'
+  print 'Look back at the build/installation log for actual copies.'
