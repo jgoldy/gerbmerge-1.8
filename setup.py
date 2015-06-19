@@ -49,8 +49,8 @@ elif sys.platform == 'darwin': # this catches MAC OSX
 python %s/gerbmerge.py $*
  """ % DestDir)
   fid.close()
-else:
-  DestLib = distutils.sysconfig.get_config_var('LIBPYTHON')
+else:  # Should be linux or *nix here
+  DestLib = distutils.sysconfig.get_python_lib()
   DestDir = os.path.join(DestLib, 'gerbmerge')
   BinFiles = ['misc/gerbmerge']
   BinDir = distutils.sysconfig.get_config_var('BINDIR')  
@@ -59,8 +59,8 @@ else:
   fid = file('misc/gerbmerge', 'wt')
   fid.write( \
   r"""#!/bin/sh
-python %s/site-packages/gerbmerge/gerbmerge.py $*
-  """ % DestLib)
+  python %s/gerbmerge.py $*
+  """ % DestDir)
   fid.close()
 
 dist=setup (name = "gerbmerge",
@@ -122,7 +122,8 @@ if do_fix_perms:
     if sys.platform == 'darwin': # this catches MAC OSX
       pass
     else:
-      os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
+      #os.path.walk(os.path.join(DestLib, 'site-packages/gerbmerge'), fixperms, 1)
+      pass
 
     os.chmod(os.path.join(BinDir, 'gerbmerge'), 0755)
     print 'done'
